@@ -49,7 +49,7 @@ public class OrderControllerTests {
     @Order(3)
     public void orderRegisterShouldReturn200() throws Exception {
         String json = "{\"clientId\": 1,\"employerId\": 1,\"productId\": 2,\"productPrice\": 5}";
-        MockHttpServletRequestBuilder req = post("/1").contentType(MediaType.APPLICATION_JSON).content(json);
+        MockHttpServletRequestBuilder req = post("/").contentType(MediaType.APPLICATION_JSON).content(json);
 
         this.mockMvc.perform(req).andDo(print())
                 .andExpect(status().isOk());
@@ -57,16 +57,6 @@ public class OrderControllerTests {
 
     @Test
     @Order(4)
-    public void duplicatedOrderRegisterShouldReturn422() throws Exception {
-        String json = "{\"clientId\": 1,\"employerId\": 1,\"productId\": 2,\"productPrice\": 5}";
-        MockHttpServletRequestBuilder req = post("/1").contentType(MediaType.APPLICATION_JSON).content(json);
-
-        this.mockMvc.perform(req).andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    @Order(5)
     public void publishingAcceptEventToExistingOrderShouldReturn200() throws Exception {
         String json = "{\"employerId\": 1}";
         MockHttpServletRequestBuilder req = patch("/accept/1").contentType(MediaType.APPLICATION_JSON).content(json);
@@ -76,7 +66,7 @@ public class OrderControllerTests {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void publishingReadyEventToExistingOrderShouldReturn200() throws Exception {
         String json = "{\"employerId\": 1}";
         MockHttpServletRequestBuilder req = patch("/ready/1").contentType(MediaType.APPLICATION_JSON).content(json);
@@ -86,7 +76,7 @@ public class OrderControllerTests {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     public void publishingGiveEventToExistingOrderShouldReturn200() throws Exception {
         String json = "{\"employerId\": 1}";
         MockHttpServletRequestBuilder req = patch("/give/1").contentType(MediaType.APPLICATION_JSON).content(json);
@@ -96,7 +86,7 @@ public class OrderControllerTests {
     }
 
     @Test
-    @Order(8)
+    @Order(7)
     public void publishingAnyNewEventToExistingAndGivenOrderShouldReturn404() throws Exception {
         String json = "{\"employerId\": 1}";
         MockHttpServletRequestBuilder req = patch("/accept/1").contentType(MediaType.APPLICATION_JSON).content(json);
@@ -106,10 +96,10 @@ public class OrderControllerTests {
     }
 
     @Test
-    @Order(9)
+    @Order(8)
     public void publishingAnyNewEventToExistingAndCanceledOrderShouldReturn404() throws Exception {
         String jsonRegister = "{\"clientId\": 1,\"employerId\": 1,\"productId\": 2,\"productPrice\": 5}";
-        MockHttpServletRequestBuilder reqReg = post("/2").contentType(MediaType.APPLICATION_JSON).content(jsonRegister);
+        MockHttpServletRequestBuilder reqReg = post("/").contentType(MediaType.APPLICATION_JSON).content(jsonRegister);
 
         this.mockMvc.perform(reqReg).andDo(print())
                 .andExpect(status().isOk());
@@ -128,11 +118,11 @@ public class OrderControllerTests {
     }
 
     @Test
-    @Order(10)
+    @Order(9)
     public void anyNullFieldAtAnyRequestShouldReturn400() throws Exception {
         // Empty client id and product price fields
         String jsonRegister = "{\"employerId\": 1,\"productId\": 2}";
-        MockHttpServletRequestBuilder reqReg = post("/1").contentType(MediaType.APPLICATION_JSON).content(jsonRegister);
+        MockHttpServletRequestBuilder reqReg = post("/").contentType(MediaType.APPLICATION_JSON).content(jsonRegister);
 
         this.mockMvc.perform(reqReg).andDo(print())
                 .andExpect(status().isBadRequest());

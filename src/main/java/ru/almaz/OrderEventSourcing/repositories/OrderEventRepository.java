@@ -1,6 +1,7 @@
 package ru.almaz.OrderEventSourcing.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.almaz.OrderEventSourcing.models.db.OrderEvent;
 
@@ -13,6 +14,7 @@ public interface OrderEventRepository extends JpaRepository<OrderEvent, Long> {
 
     List<OrderEvent> findAllByOrderId(Long orderId);
     Optional<OrderEvent> findByOrderIdAndType(Long orderId, String type);
-
     Optional<OrderEvent> findByOrderIdAndTypeIn(Long orderId, Collection<String> type);
+    @Query(value = "SELECT NEXT VALUE FOR `order_id_sequence`", nativeQuery = true)
+    Long nextOrderIdVal();
 }

@@ -16,6 +16,8 @@ public class OrderEvent {
     private Long id;
 
     @Column(name = "order_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+    @SequenceGenerator(name = "order_seq", sequenceName = "order_id_sequence", allocationSize = 10)
     private Long orderId;
 
     @Column(name = "type", nullable = false)

@@ -2,6 +2,7 @@ package ru.almaz.OrderEventSourcing.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,18 +38,15 @@ public class OrderService {
     }
 
     @Transactional
-    public void publishEvent(AggregateEvent event) {
-        orderEventRepository.save(
+    public OrderEvent publishEvent(AggregateEvent event) {
+        return orderEventRepository.save(
                 OrderEvent.getInstance(event.getAggregateId(), event.getClass().getName(), toJson(event), new Date())
         );
     }
 
-    public void registerOrder(OrderCreatedEvent event) {
-        if (isOrderRegistered(event.getAggregateId())) {
-            throw new OrderIsRegisteredException("Order is already registered!");
-        }
-
-        publishEvent(event);
+    public OrderEvent registerOrder(OrderCreatedEvent event) {
+        event.setOrderId(orderEventRepository.nextOrderIdVal());
+        return publishEvent(event);
     }
 
     public void updateOrder(AggregateEvent event) {

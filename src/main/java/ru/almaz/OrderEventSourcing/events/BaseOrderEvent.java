@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public abstract class BaseOrderEvent implements AggregateEvent {
-    private Long orderId = null;
+    private Long orderId;
 
     private Long employerId;
 

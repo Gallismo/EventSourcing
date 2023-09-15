@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.almaz.OrderEventSourcing.events.order.*;
+import ru.almaz.OrderEventSourcing.models.db.OrderEvent;
 import ru.almaz.OrderEventSourcing.models.material.Order;
 import ru.almaz.OrderEventSourcing.requests.*;
 import ru.almaz.OrderEventSourcing.services.OrderService;
@@ -25,12 +26,11 @@ public class OrderController {
         return orderService.getOrder(id);
     }
 
-    @PostMapping("/{id}")
-    public Order registerOrder(@Valid @RequestBody OrderCreateRequest createRequest, @PathVariable Long id) {
+    @PostMapping("/")
+    public Order registerOrder(@Valid @RequestBody OrderCreateRequest createRequest) {
         OrderCreatedEvent createdEvent = new OrderCreatedEvent(createRequest);
-        createdEvent.setOrderId(id);
-        orderService.registerOrder(createdEvent);
-        return orderService.getOrder(id);
+        OrderEvent dbEvent = orderService.registerOrder(createdEvent);
+        return orderService.getOrder(dbEvent.getOrderId());
     }
 
     @PatchMapping("/accept/{id}")
